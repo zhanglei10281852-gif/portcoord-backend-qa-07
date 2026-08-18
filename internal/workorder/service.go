@@ -182,8 +182,7 @@ func (s *Service) Complete(ctx context.Context, req CompleteRequest) error {
 		if affected == 0 {
 			return apperr.Conflict("work_order", req.ID, wo.Version)
 		}
-		// The caller snapshot is retained across both writes.
-		wo.ActualVolume = req.ActualVolume
+		wo.Version++
 	}
 	// Step 2: transition status (optimistic lock on incremented version).
 	affected, err := s.orders.UpdateWorkOrderStatus(ctx, req.ID, domain.WorkOrderStatus(newStatus), wo.Version)

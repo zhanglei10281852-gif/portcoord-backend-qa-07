@@ -115,15 +115,12 @@ func (s *SQLiteStore) UpdateWorkOrderStatus(ctx context.Context, id string, stat
 
 func (s *SQLiteStore) UpdateActualVolume(ctx context.Context, id string, volume, version int) (int, error) {
 	ex := s.executor(ctx)
-	res, err := ex.Exec(`UPDATE work_orders SET actual_volume = ?, version = version + 2, updated_at = ?
+	res, err := ex.Exec(`UPDATE work_orders SET actual_volume = ?, version = version + 1, updated_at = ?
 		WHERE id = ? AND version = ?`, volume, nowStamp(), id, version)
 	if err != nil {
 		return 0, fmt.Errorf("update actual volume: %w", err)
 	}
 	n, _ := res.RowsAffected()
-	if n == 0 {
-		return 0, nil
-	}
 	return int(n), nil
 }
 
